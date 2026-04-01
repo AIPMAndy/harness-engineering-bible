@@ -2,6 +2,7 @@
   "name": "hello-world-agent",
   "version": "1.0.0",
   "description": "A simple AI agent example for Harness Engineering Bible",
+  "type": "commonjs",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -20,7 +21,5 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
-  "dependencies": {
-    "node-fetch": "^3.3.2"
-  }
+  "dependencies": {}
 }

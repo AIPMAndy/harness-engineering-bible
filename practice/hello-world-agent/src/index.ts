@@ -1,11 +1,11 @@
 /**
  * Hello World Agent - 一个简单的 AI 智能体示例
- * 
+ *
  * 这个示例展示了一个基础的 AI 智能体如何：
  * 1. 接收用户输入
  * 2. 调用 LLM API 生成回复
  * 3. 返回结构化的响应
- * 
+ *
  * 使用说明：
  * - 设置环境变量 LLM_API_KEY 和 LLM_API_URL
  * - 运行 `npm run dev` 或 `npm start`
@@ -85,8 +85,6 @@ export class HelloWorldAgent {
    * 调用 LLM API
    */
   private async callLLM(userMessage: string, systemPrompt: string): Promise<string> {
-    const fetch = await import('node-fetch');
-    
     const messages = [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userMessage },
@@ -99,7 +97,7 @@ export class HelloWorldAgent {
       temperature: this.config.temperature,
     };
 
-    const response = await fetch.default(this.config.apiUrl, {
+    const response = await fetch(this.config.apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -157,19 +155,20 @@ async function main() {
       if (input.trim()) {
         console.log('\n🤖 思考中...\n');
         const result = await agent.process(input);
-        
+
         if (result.success) {
           console.log(`✨ ${result.reply}`);
         } else {
           console.log(`❌ ${result.reply}`);
         }
-        
+
         if (result.metadata) {
           console.log(`\n📊 模型：${result.metadata.model}`);
         }
+
         console.log('');
       }
-      
+
       prompt();
     });
   };
