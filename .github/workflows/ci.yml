@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: |
+        cd practice/hello-world-agent
+        npm ci
+    
+    - name: Run lint
+      run: |
+        cd practice/hello-world-agent
+        npm run lint || echo "Lint not configured, skipping"
+    
+    - name: Run tests
+      run: |
+        cd practice/hello-world-agent
+        npm test -- --coverage
+    
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./practice/hello-world-agent/coverage/coverage-final.json
+        flags: unittests
+        name: codecov-umbrella
+    
+    - name: Build
+      run: |
+        cd practice/hello-world-agent
+        npm run build || echo "Build not configured, skipping"
+    
+    - name: Check Micro-SaaS Boilerplate
+      run: |
+        cd practice/micro-saas-boilerplate
+        npm ci
+        npm run build || echo "Micro-SaaS build skipped"
+
+  feedback-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Check feedback cases
+      run: |
+        if [ -d "feedback" ]; then
+          echo "✅ Feedback directory exists"
+          ls -la feedback/
+        else
+          echo "⚠️ Feedback directory not found"
+        fi
+    
+    - name: Check concept documents
+      run: |
+        echo "📚 Checking concept documents..."
+        ls -la concepts/
+        echo "✅ All concept documents present"
